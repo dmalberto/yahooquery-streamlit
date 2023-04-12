@@ -117,11 +117,11 @@ def main():
     asynchronous = st.sidebar.radio(
         "Make Asynchronous requests?", options=[False, True]
     )
-    asynchronous_str = "" if not asynchronous else ", asynchronous=True"
+    asynchronous_str = ", asynchronous=True" if asynchronous else ""
 
     formatted = st.sidebar.radio(
         "Format data returned from API", options=[False, True])
-    formatted_str = "" if not formatted else ", formatted=True"
+    formatted_str = ", formatted=True" if formatted else ""
 
     username = st.sidebar.text_input(
         label="Username",
@@ -365,7 +365,11 @@ def history_view(tickers: Ticker, symbols: List[str], strings: dict):
     history_args["interval"] = st.selectbox(
         "Select Interval", options=Ticker.INTERVALS, index=8  # pylint: disable=protected-access
     )
-    args_string = [str(k) + "='" + str(v) + "'" for k, v in history_args.items() if v is not None]
+    args_string = [
+        f"{str(k)}='{str(v)}'"
+        for k, v in history_args.items()
+        if v is not None
+    ]
     st.code(f"Ticker('{symbols}'{strings['formatted_str']}{strings['asynchronous_str']}).history({', '.join(args_string)})", language="python")
     dataframe = tickers.history(**history_args)
 
@@ -391,7 +395,7 @@ def history_view(tickers: Ticker, symbols: List[str], strings: dict):
                 close=dataframe['close']
             ))
             st.plotly_chart(fig)
-            
+
         st.dataframe(dataframe)
 
 
